@@ -7,6 +7,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static credentials - no database
+
+
+
 const USER = {
   username: "chamupathi",
   password: "admin123",
