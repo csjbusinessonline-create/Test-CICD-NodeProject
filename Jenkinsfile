@@ -14,18 +14,12 @@ pipeline {
                 bat 'docker build -t chamupathisaranga/nodeapp:%BUILD_NUMBER% .'
             }
         }
-        stage('Login to Docker Hub') {
+         stage('Login to Docker Hub') {
             steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'samin-docker',
-                        variable: 'samindocker'
-                    )
-                ]) {
-                    bat '''
-                        @echo off
-                        echo %samindocker% | docker login -u chamupathisaranga --password-stdin
-                    '''
+                withCredentials([string(credentialsId: 'samin-docker', variable: 'samindocker')]) {
+                    script {
+                        bat "docker login -u chamupathisaranga -p %samindocker%"
+                    }
                 }
             }
         }
