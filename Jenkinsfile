@@ -1,45 +1,43 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
+    agent any 
+    
+    stages { 
+        stage('SCM Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
+                retry(3) {
+                    git branch: 'main', url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
+                }
             }
         }
-
-        stage('Check Node.js and npm') {
-            steps {
-                bat 'node --version'
-                bat 'npm --version'
+        stage('Build Docker Image') {
+            steps {  
+                bat 'docker build -t chamupathisaranga/nodeapp:%BUILD_NUMBER% .'
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Login to Docker Hub') {
             steps {
-                bat 'npm install'
+                withCredentials([
+                    string(
+                        credentialsId: 'samin-docker',
+                        variable: 'samindocker'
+                    )
+                ]) {
+                    bat '''
+                        @echo off
+                        echo %samindocker% | docker login -u chamupathisaranga --password-stdin
+                    '''
+                }
             }
         }
-
-        stage('Build') {
+        stage('Push Image') {
             steps {
-                bat 'npm run build --if-present'
+                bat 'docker push chamupathisaranga/nodeapp:%BUILD_NUMBER%'
             }
         }
     }
-
     post {
-        success {
-            echo 'Node.js CI/CD pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'Pipeline failed. Check the Console Output.'
-        }
-
         always {
-            echo 'Pipeline execution finished.'
+            bat 'docker logout'
         }
     }
 }
