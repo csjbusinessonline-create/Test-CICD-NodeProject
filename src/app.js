@@ -3,9 +3,11 @@ const path = require("path");
 
 const app = express();
 
+// Disable Express framework disclosure
+app.disable("x-powered-by");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // Static credentials - no database
 
 
