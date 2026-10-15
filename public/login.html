@@ -1,9 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Login</title>
 
   <style>
@@ -13,20 +13,28 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
     }
 
     .login-container {
+      box-sizing: border-box;
       background: white;
       padding: 30px;
       border-radius: 8px;
       width: 300px;
+      max-width: 100%;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
       text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
     }
 
     input {
@@ -51,30 +59,35 @@
 </head>
 
 <body>
-
-  <div class="login-container">
+  <main class="login-container">
     <h2>Login</h2>
 
     <form id="loginForm">
+      <label for="username">Username</label>
       <input
         id="username"
+        name="username"
         type="text"
-        placeholder="Username"
+        placeholder="Enter your username"
+        autocomplete="username"
         required
       >
 
+      <label for="password">Password</label>
       <input
         id="password"
+        name="password"
         type="password"
-        placeholder="Password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
         required
       >
 
       <button type="submit">Login</button>
     </form>
 
-    <p id="message"></p>
-  </div>
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
 
   <script>
     const form = document.getElementById("loginForm");
@@ -86,37 +99,37 @@
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
+      message.textContent = "Logging in...";
+      message.style.color = "black";
+
       try {
         const response = await fetch("/login", {
           method: "POST",
-
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-
           body: JSON.stringify({
             username,
-            password,
-          }),
+            password
+          })
         });
 
         const data = await response.json();
 
         message.textContent = data.message;
 
-        if (data.success) {
+        if (response.ok && data.success) {
           message.style.color = "green";
           window.location.href = "/home";
         } else {
           message.style.color = "red";
         }
-
       } catch (error) {
-        message.textContent = "Something went wrong.";
+        message.textContent = "Something went wrong. Please try again.";
         message.style.color = "red";
       }
     });
   </script>
-
 </body>
 </html>
+```
