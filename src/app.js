@@ -1,5 +1,6 @@
 
 const express = require("express");
+const fs = require("fs");
 const path = require("path");
 
 const app = express();
@@ -22,9 +23,10 @@ const USER = {
 
 // Login page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "login.html"), (err) => {
+  const loginPagePath = path.join(PUBLIC_DIR, "login.html");
+  res.sendFile(loginPagePath, (err) => {
     if (err) {
-      console.error("Login page error:", err);
+      console.error("Login page error:", { path: loginPagePath, exists: fs.existsSync(loginPagePath), error: err });
       if (!res.headersSent) {
         res.status(err.statusCode || 500).send("Unable to load login page");
       }
@@ -34,9 +36,10 @@ app.get("/", (req, res) => {
 
 // Login page alternative URL
 app.get("/login.html", (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "login.html"), (err) => {
+  const loginPagePath = path.join(PUBLIC_DIR, "login.html");
+  res.sendFile(loginPagePath, (err) => {
     if (err) {
-      console.error("Login page error:", err);
+      console.error("Login page error:", { path: loginPagePath, exists: fs.existsSync(loginPagePath), error: err });
       if (!res.headersSent) {
         res.status(err.statusCode || 500).send("Unable to load login page");
       }
@@ -50,9 +53,10 @@ app.get("/home", (req, res) => {
     return res.redirect("/");
   }
 
-  res.sendFile(path.join(PUBLIC_DIR, "home.html"), (err) => {
+  const homePagePath = path.join(PUBLIC_DIR, "home.html");
+  res.sendFile(homePagePath, (err) => {
     if (err) {
-      console.error("Home page error:", err);
+      console.error("Home page error:", { path: homePagePath, exists: fs.existsSync(homePagePath), error: err });
       if (!res.headersSent) {
         res.status(err.statusCode || 500).send("Unable to load home page");
       }
