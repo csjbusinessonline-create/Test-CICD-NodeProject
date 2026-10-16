@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
-
+path.join(__dirname, "../public/login.html")
+path.join(__dirname, "../public/home.html")
 const app = express();
 
 // Disable Express framework disclosure
