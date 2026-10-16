@@ -173,14 +173,24 @@ pipeline {
             }
         }
         
+
     stage('9. Deploy Container') {
         steps {
             bat '''
                 @echo off
+                echo Checking existing container...
+
                 docker inspect nodeapp-cicd >NUL 2>&1
-                if not errorlevel 1 docker rm -f nodeapp-cicd
+                if not errorlevel 1 (
+                    docker rm -f nodeapp-cicd
+                    if errorlevel 1 exit /b 1
+                )
+
+                echo Pulling latest image...
+                docker pull %DOCKER_IMAGE%:%BUILD_NUMBER%
                 if errorlevel 1 exit /b 1
 
+                echo Starting container...
                 docker run -d ^
                     --name nodeapp-cicd ^
                     --restart unless-stopped ^
@@ -188,9 +198,13 @@ pipeline {
                     %DOCKER_IMAGE%:%BUILD_NUMBER%
 
                 if errorlevel 1 exit /b 1
+
+                echo Container deployed successfully.
+                docker ps --filter "name=nodeapp-cicd"
             '''
         }
     }
+
 
     stage('10. Verify Container') {
         steps {
