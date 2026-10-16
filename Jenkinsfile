@@ -38,36 +38,52 @@
 
 
 pipeline {
-  agent any
-  tools { nodejs 'Node26' }
-  stages {
-    stage('Checkout') {
-    steps {
-            retry(3) {
-                    git branch: 'main', url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
+    agent any
+
+    tools {
+        nodejs 'Node26'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                retry(3) {
+                    git branch: 'main',
+                        url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
+                }
+            }
+        }
+
+        stage('Install') {
+            steps {
+                bat 'npm ci'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'npm test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    withSonarQubeEnv('SonarCloud') {
+                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
-    stage('Install') {
-      steps { sh 'npm ci' }
-    }
-    stage('Test') {
-      steps { sh 'npm test' }
-    }
-    stage('SonarQube Analysis') {
-      steps {
-        script { scannerHome = tool 'SonarScanner' }
-        withSonarQubeEnv('SonarCloud') {
-          sh "${scannerHome}/bin/sonar-scanner"
-        }
-      }
-    }
-    stage('Quality Gate') {
-      steps {
-        timeout(time: 5, unit: 'MINUTES') {
-          waitForQualityGate abortPipeline: true
-        }
-      }
-    }
-  }
 }
