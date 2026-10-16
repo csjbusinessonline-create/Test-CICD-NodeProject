@@ -172,6 +172,35 @@ pipeline {
                 bat 'docker push %DOCKER_IMAGE%:%BUILD_NUMBER%'
             }
         }
+        
+    stage('9. Deploy Container') {
+        steps {
+            bat '''
+                @echo off
+                docker inspect nodeapp-cicd >NUL 2>&1
+                if not errorlevel 1 docker rm -f nodeapp-cicd
+                if errorlevel 1 exit /b 1
+
+                docker run -d ^
+                    --name nodeapp-cicd ^
+                    --restart unless-stopped ^
+                    -p 8081:3000 ^
+                    %DOCKER_IMAGE%:%BUILD_NUMBER%
+
+                if errorlevel 1 exit /b 1
+            '''
+        }
+    }
+
+    stage('10. Verify Container') {
+        steps {
+            bat '''
+                docker ps --filter "name=nodeapp-cicd"
+                docker inspect --format="{{.State.Status}}" nodeapp-cicd
+            '''
+        }
+    }
+
     }
 
     post {
