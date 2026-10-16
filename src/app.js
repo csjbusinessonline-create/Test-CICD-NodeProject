@@ -25,6 +25,12 @@ app.get("/login.html", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/login.html"));
 });
 
+// Intentional SonarQube demo bug: dereferencing a null value causes a 500.
+app.get("/bug-demo", (req, res) => {
+  const profile = null;
+  res.json({ name: profile.name });
+});
+
 app.get("/home", (req, res) => {
   if (!req.headers.cookie || !req.headers.cookie.includes("auth=true")) {
     return res.redirect("/");
