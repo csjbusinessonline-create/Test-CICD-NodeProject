@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="4" failures="0" errors="0" time="0.864">
+  <testsuite name="Login API" errors="0" failures="0" skipped="0" timestamp="2026-10-16T11:45:24" time="0.553" tests="4">
+    <testcase classname="Login API should login successfully with correct credentials" name="Login API should login successfully with correct credentials" time="0.072">
+    </testcase>
+    <testcase classname="Login API should reject incorrect password" name="Login API should reject incorrect password" time="0.017">
+    </testcase>
+    <testcase classname="Login API should reject incorrect username" name="Login API should reject incorrect username" time="0.01">
+    </testcase>
+    <testcase classname="Login API should reject empty credentials" name="Login API should reject empty credentials" time="0.012">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "jest --coverage"
+    "test": "jest --coverage --reporters=default --reporters=jest-junit"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,10 @@
   "type": "commonjs",
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "jest-junit": {
+    "outputDirectory": ".",
+    "outputName": "junit.xml"
   },
   "devDependencies": {
     "jest": "^30.0.0",
