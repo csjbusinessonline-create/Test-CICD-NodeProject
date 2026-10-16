@@ -184,7 +184,7 @@ pipeline {
                 docker run -d ^
                     --name nodeapp-cicd ^
                     --restart unless-stopped ^
-                    -p 8081:3000 ^
+                    -p 3000:3000 ^
                     %DOCKER_IMAGE%:%BUILD_NUMBER%
 
                 if errorlevel 1 exit /b 1
