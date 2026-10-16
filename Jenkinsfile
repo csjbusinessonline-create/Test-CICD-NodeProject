@@ -20,6 +20,23 @@ pipeline {
             }
         }
         
+stage('Debug App Files') {
+    steps {
+        bat 'echo === CURRENT GIT COMMIT ==='
+        bat 'git rev-parse HEAD'
+
+        bat 'echo === APP SOURCE IN JENKINS ==='
+        bat 'type src\\app.js'
+
+        bat 'echo === TRACKED HTML FILES ==='
+        bat 'git ls-files public'
+
+        bat 'echo === CHECK HTML FILES ==='
+        bat 'if exist public\\login.html (echo login.html FOUND) else (echo login.html MISSING)'
+        bat 'if exist public\\home.html (echo home.html FOUND) else (echo home.html MISSING)'
+    }
+}
+
         stage('Check HTML Files') {
             steps {
                 bat 'echo Current directory:'
