@@ -1,40 +1,94 @@
-// pipeline {
-//     agent any 
+// // pipeline {
+// //     agent any 
     
-//     stages { 
-//         stage('SCM Checkout') {
+// //     stages { 
+// //         stage('SCM Checkout') {
+// //             steps {
+// //                 retry(3) {
+// //                     git branch: 'main', url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
+// //                 }
+// //             }
+// //         }
+// //         stage('Build Docker Image') {
+// //             steps {  
+// //                 bat 'docker build -t chamupathisaranga/nodeapp:%BUILD_NUMBER% .'
+// //             }
+// //         }
+// //          stage('Login to Docker Hub') {
+// //             steps {
+// //                 withCredentials([string(credentialsId: 'samin-docker', variable: 'samindocker')]) {
+// //                     script {
+// //                         bat "docker login -u chamupathisaranga -p %samindocker%"
+// //                     }
+// //                 }
+// //             }
+// //         }
+// //         stage('Push Image') {
+// //             steps {
+// //                 bat 'docker push chamupathisaranga/nodeapp:%BUILD_NUMBER%'
+// //             }
+// //         }
+// //     }
+// //     post {
+// //         always {
+// //             bat 'docker logout'
+// //         }
+// //     }
+// // }
+
+
+// pipeline {
+//     agent any
+
+//     tools {
+//         nodejs 'Node26'
+//     }
+
+//     stages {
+//         stage('Checkout') {
 //             steps {
 //                 retry(3) {
-//                     git branch: 'main', url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
+//                     git branch: 'main',
+//                         url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
 //                 }
 //             }
 //         }
-//         stage('Build Docker Image') {
-//             steps {  
-//                 bat 'docker build -t chamupathisaranga/nodeapp:%BUILD_NUMBER% .'
+
+//         stage('Install') {
+//             steps {
+//                 bat 'npm ci'
 //             }
 //         }
-//          stage('Login to Docker Hub') {
+
+//         stage('Test') {
 //             steps {
-//                 withCredentials([string(credentialsId: 'samin-docker', variable: 'samindocker')]) {
-//                     script {
-//                         bat "docker login -u chamupathisaranga -p %samindocker%"
+//                 bat 'npm test'
+//             }
+//         }
+
+//         stage('SonarQube Analysis') {
+//             steps {
+//                 script {
+//                     def scannerHome = tool 'SonarScanner'
+
+//                     withSonarQubeEnv('SonarCloud') {
+//                         bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
 //                     }
 //                 }
 //             }
 //         }
-//         stage('Push Image') {
+
+//         stage('Quality Gate') {
 //             steps {
-//                 bat 'docker push chamupathisaranga/nodeapp:%BUILD_NUMBER%'
+//                 timeout(time: 17, unit: 'MINUTES') {
+//                     waitForQualityGate abortPipeline: true
+//                 }
 //             }
 //         }
 //     }
-//     post {
-//         always {
-//             bat 'docker logout'
-//         }
-//     }
 // }
+
+
 
 
 pipeline {
@@ -44,8 +98,13 @@ pipeline {
         nodejs 'Node26'
     }
 
+    environment {
+        DOCKER_IMAGE = 'chamupathisaranga/nodeapp-cicd'
+        DOCKER_USER = 'chamupathisaranga'
+    }
+
     stages {
-        stage('Checkout') {
+        stage('1. SCM Checkout') {
             steps {
                 retry(3) {
                     git branch: 'main',
@@ -54,19 +113,19 @@ pipeline {
             }
         }
 
-        stage('Install') {
+        stage('2. Install Dependencies') {
             steps {
                 bat 'npm ci'
             }
         }
 
-        stage('Test') {
+        stage('3. Test') {
             steps {
                 bat 'npm test'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('4. SonarCloud Analysis') {
             steps {
                 script {
                     def scannerHome = tool 'SonarScanner'
@@ -78,12 +137,59 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
+        stage('5. Quality Gate') {
             steps {
                 timeout(time: 17, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
+        }
+
+        stage('6. Build Docker Image') {
+            steps {
+                bat 'docker build -t %DOCKER_IMAGE%:%BUILD_NUMBER% .'
+            }
+        }
+
+        stage('7. Docker Hub Login') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'samin-docker',
+                        variable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    bat '''
+                        @echo off
+                        echo %DOCKER_PASSWORD%| docker login -u %DOCKER_USER% --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('8. Push Docker Image') {
+            steps {
+                bat 'docker push %DOCKER_IMAGE%:%BUILD_NUMBER%'
+            }
+        }
+    }
+
+    post {
+        always {
+            bat 'docker logout'
+        }
+
+        success {
+            echo 'Pipeline completed successfully!'
+            echo 'Docker image was pushed to Docker Hub.'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the failed stage in Jenkins.'
+        }
+
+        aborted {
+            echo 'Pipeline was aborted.'
         }
     }
 }
