@@ -1,20 +1,15 @@
-# Use a Node.js base image
 FROM node:22-alpine
 
-# Set the working directory
 WORKDIR /app
 
-# Copy dependency manifests first
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 
-# Install exact dependencies from the lockfile
 RUN npm ci --omit=dev
 
-# Copy application source (filtered by .dockerignore)
-COPY . .
+COPY --chown=node:node . .
 
-# Set the application port
+USER node
+
 EXPOSE 3000
 
-# Start the application
 CMD ["npm", "start"]
