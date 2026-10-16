@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="4" failures="0" errors="0" time="0.864">
-  <testsuite name="Login API" errors="0" failures="0" skipped="0" timestamp="2026-10-16T11:45:24" time="0.553" tests="4">
-    <testcase classname="Login API should login successfully with correct credentials" name="Login API should login successfully with correct credentials" time="0.072">
+<testsuites name="jest tests" tests="11" failures="0" errors="0" time="1.538">
+  <testsuite name="Login API" errors="0" failures="0" skipped="0" timestamp="2026-10-16T12:07:55" time="1.195" tests="11">
+    <testcase classname="Login API should login successfully with correct credentials" name="Login API should login successfully with correct credentials" time="0.087">
     </testcase>
-    <testcase classname="Login API should reject incorrect password" name="Login API should reject incorrect password" time="0.017">
+    <testcase classname="Login API should reject incorrect password" name="Login API should reject incorrect password" time="0.011">
     </testcase>
-    <testcase classname="Login API should reject incorrect username" name="Login API should reject incorrect username" time="0.01">
+    <testcase classname="Login API should reject incorrect username" name="Login API should reject incorrect username" time="0.009">
     </testcase>
-    <testcase classname="Login API should reject empty credentials" name="Login API should reject empty credentials" time="0.012">
+    <testcase classname="Login API should reject empty credentials" name="Login API should reject empty credentials" time="0.009">
+    </testcase>
+    <testcase classname="Login API should reject missing username" name="Login API should reject missing username" time="0.011">
+    </testcase>
+    <testcase classname="Login API should reject missing password" name="Login API should reject missing password" time="0.009">
+    </testcase>
+    <testcase classname="Login page routes GET / should return the login page" name="Login page routes GET / should return the login page" time="0.017">
+    </testcase>
+    <testcase classname="Login page routes GET /login.html should return the login page" name="Login page routes GET /login.html should return the login page" time="0.014">
+    </testcase>
+    <testcase classname="Home route authentication should redirect unauthenticated users to login" name="Home route authentication should redirect unauthenticated users to login" time="0.012">
+    </testcase>
+    <testcase classname="Home route authentication should serve the home page with auth cookie" name="Home route authentication should serve the home page with auth cookie" time="0.014">
+    </testcase>
+    <testcase classname="Home route authentication should redirect when auth cookie is false" name="Home route authentication should redirect when auth cookie is false" time="0.009">
     </testcase>
   </testsuite>
 </testsuites>
