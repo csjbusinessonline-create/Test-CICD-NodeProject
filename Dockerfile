@@ -5,12 +5,12 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Copy dependency manifests first
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm install
+# Install exact dependencies from the lockfile
+RUN npm ci --omit=dev
 
-# Copy the application source code
+# Copy application source (filtered by .dockerignore)
 COPY . .
 
 # Set the application port
