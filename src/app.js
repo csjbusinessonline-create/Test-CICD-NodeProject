@@ -4,8 +4,8 @@ const path = require("path");
 
 const app = express();
 
-// Resolve the public folder from the project root
-const PUBLIC_DIR = path.resolve(process.cwd(), "public");
+// Resolve assets relative to this file so tests work from any working directory.
+const PUBLIC_DIR = path.resolve(__dirname, "../public");
 
 // Disable Express framework disclosure
 app.disable("x-powered-by");
