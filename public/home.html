@@ -12,9 +12,9 @@
     
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #1f2937;
-      background: #f8fafc;
+      background: #f5f7fb;
     }
 
     header {
@@ -23,6 +23,7 @@
       z-index: 10;
       background: #ffffff;
       border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
     }
 
     .nav {
@@ -38,7 +39,8 @@
     .brand {
       font-size: 24px;
       font-weight: 700;
-      color: #0f172a;
+      color: #0f766e;
+      letter-spacing: -0.04em;
     }
 
     .nav-links {
@@ -59,23 +61,27 @@
 
     .cart-button {
       border: none;
-      border-radius: 6px;
+      border-radius: 999px;
       padding: 10px 14px;
       color: #ffffff;
-      background: #2563eb;
+      background: #0f766e;
       cursor: pointer;
       font-weight: 700;
     }
 
     .hero {
-      background: linear-gradient(120deg, #0f172a 0%, #1e40af 52%, #0f766e 100%);
+      background:
+        linear-gradient(90deg, rgba(8, 18, 35, 0.92) 0%, rgba(8, 35, 58, 0.78) 52%, rgba(8, 35, 58, 0.38) 100%),
+        url("https://images.unsplash.com/photo-1548611716-f156c633d514?auto=format&fit=crop&w=2200&q=85") center 52% / cover no-repeat;
       color: #ffffff;
+      transition: background-image 300ms ease;
+      position: relative;
     }
 
     .hero-inner {
       max-width: 1120px;
       margin: 0 auto;
-      min-height: 420px;
+      min-height: 450px;
       padding: 64px 24px;
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
@@ -87,7 +93,7 @@
       margin: 0;
       font-size: clamp(38px, 6vw, 64px);
       line-height: 1.02;
-      letter-spacing: 0;
+      letter-spacing: -0.045em;
     }
 
     .hero p {
@@ -104,11 +110,53 @@
       gap: 14px;
     }
 
+    .carousel-controls {
+      position: absolute;
+      left: max(24px, calc((100% - 1072px) / 2));
+      bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .carousel-arrow,
+    .carousel-dot {
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      color: #ffffff;
+      background: rgba(15, 23, 42, 0.35);
+      cursor: pointer;
+    }
+
+    .carousel-arrow {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 20px;
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 7px;
+      margin: 0 4px;
+    }
+
+    .carousel-dot {
+      width: 9px;
+      height: 9px;
+      padding: 0;
+      border-radius: 50%;
+    }
+
+    .carousel-dot[aria-current="true"] {
+      border-color: #facc15;
+      background: #facc15;
+    }
+
     .primary-link,
     .secondary-link {
       min-height: 44px;
       padding: 13px 18px;
-      border-radius: 6px;
+      border-radius: 999px;
       text-decoration: none;
       font-weight: 700;
       display: inline-flex;
@@ -119,6 +167,7 @@
     .primary-link {
       color: #0f172a;
       background: #facc15;
+      box-shadow: 0 8px 20px rgba(250, 204, 21, 0.2);
     }
 
     .secondary-link {
@@ -129,9 +178,11 @@
     .hero-panel {
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      border-radius: 22px;
       padding: 24px;
       backdrop-filter: blur(10px);
+      box-shadow: 0 24px 60px rgba(2, 6, 23, 0.22);
+      transform: rotate(1deg);
     }
 
     .deal-label {
@@ -192,7 +243,7 @@
     }
 
     .category {
-      border-radius: 8px;
+      border-radius: 18px;
       padding: 22px;
       min-height: 120px;
       background: #ffffff;
@@ -204,6 +255,18 @@
       margin-bottom: 8px;
       font-size: 18px;
       color: #0f172a;
+    }
+
+    .category,
+    .product {
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .category:hover,
+    .product:hover {
+      transform: translateY(-5px);
+      border-color: #99f6e4;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.1);
     }
 
     .category span {
@@ -218,7 +281,7 @@
 
     .product {
       overflow: hidden;
-      border-radius: 8px;
+      border-radius: 18px;
       background: #ffffff;
       border: 1px solid #e5e7eb;
     }
@@ -234,15 +297,15 @@
     }
 
     .product:nth-child(1) .product-image {
-      background: #0f766e;
+      background: linear-gradient(135deg, #0f766e, #2dd4bf);
     }
 
     .product:nth-child(2) .product-image {
-      background: #7c3aed;
+      background: linear-gradient(135deg, #6d28d9, #c084fc);
     }
 
     .product:nth-child(3) .product-image {
-      background: #dc2626;
+      background: linear-gradient(135deg, #be123c, #fb7185);
     }
 
     .product-content {
@@ -276,10 +339,10 @@
 
     .add-button {
       border: none;
-      border-radius: 6px;
+      border-radius: 999px;
       padding: 10px 14px;
       color: #ffffff;
-      background: #16a34a;
+      background: #0f766e;
       cursor: pointer;
       font-weight: 700;
     }
@@ -316,6 +379,19 @@
       border-top: 1px solid #e5e7eb;
     }
 
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #facc15;
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
     @media (max-width: 800px) {
       .nav,
       .section-title,
@@ -336,6 +412,11 @@
 
       .hero-inner {
         padding-top: 48px;
+        padding-bottom: 82px;
+      }
+
+      .carousel-controls {
+        left: 24px;
       }
     }
   </style>
@@ -355,7 +436,7 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero" id="hero-carousel" aria-roledescription="carousel" aria-label="Featured offers">
       <div class="hero-inner">
         <div>
           <h1>Fresh finds for everyday shopping</h1>
@@ -372,6 +453,15 @@
           <div class="deal-price">$89</div>
           <p>Includes free delivery and a one-year service warranty on selected items.</p>
         </div>
+      </div>
+      <div class="carousel-controls" aria-label="Carousel controls">
+        <button class="carousel-arrow" type="button" id="previous-slide" aria-label="Previous slide">‹</button>
+        <div class="carousel-dots">
+          <button class="carousel-dot" type="button" aria-label="Show slide 1" aria-current="true"></button>
+          <button class="carousel-dot" type="button" aria-label="Show slide 2" aria-current="false"></button>
+          <button class="carousel-dot" type="button" aria-label="Show slide 3" aria-current="false"></button>
+        </div>
+        <button class="carousel-arrow" type="button" id="next-slide" aria-label="Next slide">›</button>
       </div>
     </section>
 
@@ -460,5 +550,30 @@
   <footer>
     &copy; 2026 ShopEase. Simple ecommerce demo.
   </footer>
+
+  <script>
+    const heroCarousel = document.getElementById("hero-carousel");
+    const carouselDots = [...document.querySelectorAll(".carousel-dot")];
+    const slideImages = [
+      "https://images.unsplash.com/photo-1548611716-f156c633d514?auto=format&fit=crop&w=2200&q=85",
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=2200&q=85",
+      "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=2200&q=85"
+    ];
+    let activeSlide = 0;
+
+    function showSlide(index) {
+      activeSlide = (index + slideImages.length) % slideImages.length;
+      heroCarousel.style.backgroundImage = `linear-gradient(90deg, rgba(8, 18, 35, 0.92) 0%, rgba(8, 35, 58, 0.78) 52%, rgba(8, 35, 58, 0.38) 100%), url("${slideImages[activeSlide]}")`;
+      carouselDots.forEach((dot, dotIndex) => {
+        dot.setAttribute("aria-current", String(dotIndex === activeSlide));
+      });
+    }
+
+    document.getElementById("previous-slide").addEventListener("click", () => showSlide(activeSlide - 1));
+    document.getElementById("next-slide").addEventListener("click", () => showSlide(activeSlide + 1));
+    carouselDots.forEach((dot, index) => {
+      dot.addEventListener("click", () => showSlide(index));
+    });
+  </script>
 </body>
 </html>
