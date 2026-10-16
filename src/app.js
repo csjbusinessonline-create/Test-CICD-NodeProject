@@ -4,6 +4,9 @@ const path = require("path");
 
 const app = express();
 
+// Resolve the public folder from the project root
+const PUBLIC_DIR = path.resolve(process.cwd(), "public");
+
 // Disable Express framework disclosure
 app.disable("x-powered-by");
 
@@ -19,12 +22,26 @@ const USER = {
 
 // Login page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/login.html"));
+  res.sendFile(path.join(PUBLIC_DIR, "login.html"), (err) => {
+    if (err) {
+      console.error("Login page error:", err);
+      if (!res.headersSent) {
+        res.status(err.statusCode || 500).send("Unable to load login page");
+      }
+    }
+  });
 });
 
 // Login page alternative URL
 app.get("/login.html", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/login.html"));
+  res.sendFile(path.join(PUBLIC_DIR, "login.html"), (err) => {
+    if (err) {
+      console.error("Login page error:", err);
+      if (!res.headersSent) {
+        res.status(err.statusCode || 500).send("Unable to load login page");
+      }
+    }
+  });
 });
 
 // Home page - require authentication cookie
@@ -33,7 +50,14 @@ app.get("/home", (req, res) => {
     return res.redirect("/");
   }
 
-  res.sendFile(path.join(__dirname, "../public/home.html"));
+  res.sendFile(path.join(PUBLIC_DIR, "home.html"), (err) => {
+    if (err) {
+      console.error("Home page error:", err);
+      if (!res.headersSent) {
+        res.status(err.statusCode || 500).send("Unable to load home page");
+      }
+    }
+  });
 });
 
 // Login API
