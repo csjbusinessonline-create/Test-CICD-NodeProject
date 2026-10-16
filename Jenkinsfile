@@ -19,6 +19,19 @@ pipeline {
                 }
             }
         }
+        
+        stage('Check HTML Files') {
+            steps {
+                bat 'echo Current directory:'
+                bat 'cd'
+                bat 'echo Checking public folder:'
+                bat 'dir public'
+                bat 'echo Checking expected files:'
+                bat 'if exist public\\login.html (echo login.html FOUND) else (echo login.html MISSING)'
+                bat 'if exist public\\home.html (echo home.html FOUND) else (echo home.html MISSING)'
+            }
+        }
+
 
         stage('2. Install Dependencies') {
             steps {
