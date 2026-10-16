@@ -8,6 +8,19 @@ const app = express();
 // Resolve assets relative to this file so tests work from any working directory.
 const PUBLIC_DIR = path.resolve(__dirname, "../public");
 
+function sendHtmlPage(res, filename) {
+  const filePath = path.join(PUBLIC_DIR, filename);
+
+  fs.readFile(filePath, "utf8", (err, html) => {
+    if (err) {
+      console.error(`Failed to read page at ${filePath}:`, err);
+      return res.status(500).send("Unable to load page");
+    }
+
+    return res.type("html").send(html);
+  });
+}
+
 // Disable Express framework disclosure
 app.disable("x-powered-by");
 
@@ -23,28 +36,12 @@ const USER = {
 
 // Login page
 app.get("/", (req, res) => {
-  const loginPagePath = path.join(PUBLIC_DIR, "login.html");
-  res.sendFile(loginPagePath, (err) => {
-    if (err) {
-      console.error("Login page error:", { path: loginPagePath, exists: fs.existsSync(loginPagePath), error: err });
-      if (!res.headersSent) {
-        res.status(err.statusCode || 500).send("Unable to load login page");
-      }
-    }
-  });
+  sendHtmlPage(res, "login.html");
 });
 
 // Login page alternative URL
 app.get("/login.html", (req, res) => {
-  const loginPagePath = path.join(PUBLIC_DIR, "login.html");
-  res.sendFile(loginPagePath, (err) => {
-    if (err) {
-      console.error("Login page error:", { path: loginPagePath, exists: fs.existsSync(loginPagePath), error: err });
-      if (!res.headersSent) {
-        res.status(err.statusCode || 500).send("Unable to load login page");
-      }
-    }
-  });
+  sendHtmlPage(res, "login.html");
 });
 
 // Home page - require authentication cookie
@@ -53,15 +50,7 @@ app.get("/home", (req, res) => {
     return res.redirect("/");
   }
 
-  const homePagePath = path.join(PUBLIC_DIR, "home.html");
-  res.sendFile(homePagePath, (err) => {
-    if (err) {
-      console.error("Home page error:", { path: homePagePath, exists: fs.existsSync(homePagePath), error: err });
-      if (!res.headersSent) {
-        res.status(err.statusCode || 500).send("Unable to load home page");
-      }
-    }
-  });
+  sendHtmlPage(res, "home.html");
 });
 
 // Login API
