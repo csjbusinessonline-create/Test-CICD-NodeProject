@@ -37,89 +37,37 @@
 // }
 
 
-
-
 pipeline {
-    agent any
-
-    environment {
-        DOCKER_IMAGE = 'chamupathisaranga/nodeapp'
-    }
-
-    stages {
-        stage('SCM Checkout') {
-            steps {
-                retry(3) {
-                    git branch: 'main',
-                        url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
-                }
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                bat 'npm ci'
-            }
-        }
-        stage('Test') {
-            steps {
-                bat 'npm test'
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'SonarScanner'
-
-                    withSonarQubeEnv('SonarQube') {
-                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
-                    }
-                }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t %DOCKER_IMAGE%:%BUILD_NUMBER% .'
-            }
-        }
-        stage('Login to Docker Hub') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'samin-docker',
-                        variable: 'samindocker'
-                    )
-                ]) {
-                    bat '''
-                        @echo off
-                        echo %samindocker% | docker login -u chamupathisaranga --password-stdin
-                    '''
-                }
-            }
-        }
-        stage('Push Image') {
-            steps {
-                bat 'docker push %DOCKER_IMAGE%:%BUILD_NUMBER%'
+  agent any
+  tools { nodejs 'Node26' }
+  stages {
+    stage('Checkout') {
+    steps {
+            retry(3) {
+                    git branch: 'main', url: 'https://github.com/csjbusinessonline-create/Test-CICD-NodeProject.git'
             }
         }
     }
-    post {
-        always {
-            bat 'docker logout || exit /b 0'
-        }
-
-        success {
-            echo 'Pipeline successful: tests passed, quality gate passed, and Docker image pushed.'
-        }
-
-        failure {
-            echo 'Pipeline failed. Check the failed stage and Console Output.'
-        }
+    stage('Install') {
+      steps { sh 'npm ci' }
     }
+    stage('Test') {
+      steps { sh 'npm test' }
+    }
+    stage('SonarQube Analysis') {
+      steps {
+        script { scannerHome = tool 'SonarScanner' }
+        withSonarQubeEnv('SonarCloud') {
+          sh "${scannerHome}/bin/sonar-scanner"
+        }
+      }
+    }
+    stage('Quality Gate') {
+      steps {
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+  }
 }
